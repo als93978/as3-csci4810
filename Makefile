@@ -3,11 +3,11 @@ GLFWCFLAGS = `pkg-config --cflags glfw3`
 GLFWLIBS = `pkg-config --static --libs glfw3`
 OTHERLIBS = -pthread
 
-compile: as2.cpp lineDrawing.cpp
-	g++ $(FLAGS) $(OTHERLIBS) $(GLFWCFLAGS) -o as2.out as2.cpp lineDrawing.cpp glad.c $(GLFWLIBS)
+compile: as3.cpp lineDrawing.cpp
+	g++ $(FLAGS) $(OTHERLIBS) $(GLFWCFLAGS) -o as3.out as3.cpp lineDrawing.cpp glad.c $(GLFWLIBS)
 
-run: as2.out
-	./as2.out
+run: as3.out
+	./as3.out
 
 clean:
-	rm as2.out
+	rm as3.out

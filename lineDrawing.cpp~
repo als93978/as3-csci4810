@@ -12,7 +12,7 @@
 #include <thread>
 
 #include "lineDrawing.h"
-#include "as3.h"
+#include "as2.h"
 
 using namespace std;
 
