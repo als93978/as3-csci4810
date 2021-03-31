@@ -11,16 +11,41 @@
 
 using namespace std;
 
-vector<Vertex> vertices; // vertices/points table
+vector<Vertex> vertices; // 3D vertices/points table
+vector<Vertex> projectedVertices; // 2D (projected) vertices/points table
 vector<Line> lines; // lines/edges table
 
-const int WIDTH = getWidth();
-const int HEIGHT = getHeight();
+const float d = 2.5; // cm
+const int s = 50; // cm
+const int viewportScaleX = 500;
+const int viewportScaleY = 500;
+const int viewportCenterX = 500;
+const int viewportCenterY = 500;
 
 void init() {
     setWindowTitle("Assignment 3 - Austin Schultz");
-
+    setWindowSize(1000, 1000);
+    
     readVerticesFile();
+
+    projectVertices();
+}
+
+void projectVertices() {
+    for(int i = 0; i < vertices.size(); i++) {
+	Vertex currentVertex = vertices[i];
+
+	int screenX = ((d * currentVertex.x) / (s * currentVertex.z))
+	    * viewportScaleX + viewportCenterX;
+	int screenY = ((d * currentVertex.y) / (s * currentVertex.z))
+	    * viewportScaleY + viewportCenterY;
+
+	Vertex projectedVertex;
+	projectedVertex.x = screenX;
+	projectedVertex.y = screenY;
+
+	projectedVertices.push_back(projectedVertex);
+    }
 }
 
 void readVerticesFile() {
@@ -182,7 +207,13 @@ void outputToFile() {
 }
 
 void draw() {
+    for(int i = 0; i < lines.size(); i++) {
+	Line currentLine = lines[i];
+	Vertex vertex1 = projectedVertices[currentLine.v1Index];
+	Vertex vertex2 = projectedVertices[currentLine.v2Index];
 
+	drawLine(vertex1.x, vertex1.y,  vertex2.x, vertex2.y);
+    }
 }
 
 vector<string> split(string str, string delim) {

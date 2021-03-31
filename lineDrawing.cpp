@@ -16,8 +16,8 @@
 
 using namespace std;
 
-const int WIDTH = 800;
-const int HEIGHT = 600;
+int width = 800;
+int height = 600;
 
 string windowTitle = "Line Drawing Engine";
 
@@ -36,7 +36,7 @@ int start() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    window = glfwCreateWindow(WIDTH, HEIGHT, windowTitle.c_str(), NULL, NULL);
+    window = glfwCreateWindow(width, height, windowTitle.c_str(), NULL, NULL);
     if(!window) {
         cerr << "OpenGL Context/Window creation failed" << endl;
         glfwTerminate();
@@ -52,14 +52,14 @@ int start() {
         
     //glfwGetFramebufferSize(window, &width, &height);
     
-    glViewport(0, 0, WIDTH, HEIGHT);
+    glViewport(0, 0, width, height);
     
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glOrtho(0, WIDTH, HEIGHT, 0, -1, 1);
+    glOrtho(0, width, height, 0, -1, 1);
     
     glMatrixMode(GL_MODELVIEW);
     
@@ -89,6 +89,11 @@ int start() {
 
 void setWindowTitle(string newWindowTitle) {
     windowTitle = newWindowTitle;
+}
+
+void setWindowSize(int newWidth, int newHeight) {
+    width = newWidth;
+    height = newHeight;
 }
 
 void drawLine(int x0, int y0, int x1, int y1) {
@@ -316,17 +321,17 @@ void drawLineBresenham(int x0, int y0, int x1, int y1) {
 void drawPixel(int x, int y) {
     glBegin(GL_POINTS);
     
-    glVertex2f(x + 0.5, (HEIGHT - y) - 0.5);
+    glVertex2f(x + 0.5, (height - y) - 0.5);
 
     glEnd();
 }
 
 int getWidth() {
-    return WIDTH;
+    return width;
 }
 
 int getHeight() {
-    return HEIGHT;
+    return height;
 }
 
 int main() {    

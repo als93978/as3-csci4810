@@ -15,6 +15,7 @@ struct Line {
 
 void init();
 void readVerticesFile();
+void projectVertices();
 void startProcessing();
 void getAndProcessInput();
 void outputToFile();

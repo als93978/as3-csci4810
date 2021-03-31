@@ -7,6 +7,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 int start();
 void setWindowTitle(std::string newWindowTitle);
+void setWindowSize(int newWidth, int newHeight);
 void drawLine(int x0, int y0, int x1, int y1);
 void drawLineBasic(int x0, int y0, int x1, int y1);
 void drawLineBresenham(int x0, int y0, int x1, int y1);
