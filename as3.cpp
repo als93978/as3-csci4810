@@ -15,6 +15,7 @@ vector<Vertex> vertices; // 3D vertices/points table
 vector<Vertex> projectedVertices; // 2D (projected) vertices/points table
 vector<Line> lines; // lines/edges table
 
+// const float d = 2.5; // cm
 const float d = 2.5; // cm
 const int s = 50; // cm
 const int viewportScaleX = 500;
@@ -44,7 +45,10 @@ void projectVertices() {
 	projectedVertex.x = screenX;
 	projectedVertex.y = screenY;
 
-	projectedVertices.push_back(projectedVertex);
+	if(projectedVertices.size() < vertices.size())
+	    projectedVertices.push_back(projectedVertex);
+	else
+	    projectedVertices[i] = projectedVertex;
     }
 }
 
@@ -149,17 +153,14 @@ void getAndProcessInput() {
 
     switch(atoi(selection.c_str())) {
     case 1:
-        // getTranslateInfo();
-        cout << "Doing getTranslateInfo()" << endl << endl;
+        getTranslateInfo();
         break;
 
     case 2:
-        // getBasicScaleInfo();
-        cout << "Doing getBasicScaleInfo()" << endl << endl;
+        getBasicScaleInfo();
         break;
     case 3:
-        // getBasicRotateInfo();
-        cout << "Doing getBasicRotateInfo()" << endl << endl;
+        getBasicRotateInfo();
         break;
 
     case 4:
@@ -169,6 +170,186 @@ void getAndProcessInput() {
     case 5:
         exit(0);
     }
+}
+
+void getTranslateInfo() {
+    string translateX, translateY, translateZ = "";
+
+    while(!isANumber(translateX) || !isANumber(translateY) || !isANumber(translateZ)) {
+        cout << "Please enter the translate x value: ";
+        getline(cin, translateX);
+
+        cout << "Please enter the translate y value: ";
+        getline(cin, translateY);
+	
+	cout << "Please enter the translate z value: ";
+        getline(cin, translateZ);
+
+        cout << endl;
+
+        if(!isANumber(translateX) || !isANumber(translateY) || !isANumber(translateZ)) {
+            cout << "Please enter valid numbers for translate x, translate y,"
+		 << " and translate z." << endl;
+            cout << endl;
+        }
+    }
+
+    translate(atof(translateX.c_str()), atof(translateY.c_str()), atof(translateZ.c_str()));
+}
+
+void translate(double translateX, double translateY, double translateZ) {
+    Matrix<double> tMatrix = getTranslationMatrix(translateX, translateY, translateZ);
+
+    applyTransformation(tMatrix);
+
+    projectVertices();
+}
+
+void getBasicScaleInfo() {
+    string scaleX, scaleY, scaleZ = "";
+    
+    while(!isANumber(scaleX) || !isANumber(scaleY) || !isANumber(scaleZ)) {
+        cout << "Please enter the scale x value: ";
+        getline(cin, scaleX);
+
+        cout << "Please enter the scale y value: ";
+        getline(cin, scaleY);
+
+	cout << "Please enter the scale z value: ";
+        getline(cin, scaleZ);
+
+        cout << endl;
+
+        if(!isANumber(scaleX) || !isANumber(scaleY) || !isANumber(scaleZ)) {
+            cout << "Please enter valid numbers for scale x, scale y, and scale z." << endl;
+            cout << endl;
+        }
+    }
+
+    basicScale(atof(scaleX.c_str()), atof(scaleY.c_str()), atof(scaleZ.c_str()));
+}
+
+void basicScale(double scaleX, double scaleY, double scaleZ) {
+    Matrix<double> tMatrix = getBasicScaleMatrix(scaleX, scaleY, scaleZ);
+
+    applyTransformation(tMatrix);
+
+    projectVertices();
+}
+
+void getBasicRotateInfo() {
+    string angle = ""; // aka, theta (in degrees)
+    
+    while(!isANumber(angle)) {
+        cout << "Please enter the angle (theta) value (in degrees): ";
+        getline(cin, angle);
+        
+        cout << endl;
+        
+        if(!isANumber(angle)) {
+            cout << "Please enter a valid number for angle." << endl;
+            cout << endl;
+        }
+    }
+
+    basicRotate(atof(angle.c_str()) * M_PI / 180);
+}
+
+void basicRotate(double angle) {
+    Matrix<double> tMatrix = getBasicRotateMatrix(angle);
+
+    applyTransformation(tMatrix);
+
+    projectVertices();
+}
+
+void applyTransformation(Matrix<double> &tMatrix) {
+    for(int i = 0; i < vertices.size(); i++) {
+	Vertex currentVertex = vertices[i];
+
+	Matrix<double> vertexMatrix(1, 4);
+	vertexMatrix(0, 0) = currentVertex.x;
+	vertexMatrix(0, 1) = currentVertex.y;
+	vertexMatrix(0, 2) = currentVertex.z;
+	vertexMatrix(0, 3) = 1;
+
+	Matrix<double> result = vertexMatrix * tMatrix;
+
+	Vertex newVertex;
+	newVertex.x = result(0, 0);
+	newVertex.y = result(0, 1);
+	newVertex.z = result(0, 2);
+
+	vertices[i] = newVertex;
+    }
+}
+
+Matrix<double> getTranslationMatrix(double translateX, double translateY, double translateZ) {
+    Matrix<double> tMatrix(4, 4);
+    tMatrix(0, 0) = 1;
+    tMatrix(0, 1) = 0;
+    tMatrix(0, 2) = 0;
+    tMatrix(0, 3) = 0;
+    tMatrix(1, 0) = 0;
+    tMatrix(1, 1) = 1;
+    tMatrix(1, 2) = 0;
+    tMatrix(1, 3) = 0;
+    tMatrix(2, 0) = 0;
+    tMatrix(2, 1) = 0;
+    tMatrix(2, 2) = 1;
+    tMatrix(2, 3) = 0;
+    tMatrix(3, 0) = translateX;
+    tMatrix(3, 1) = translateY;
+    tMatrix(3, 2) = translateZ;
+    tMatrix(3, 3) = 1;
+
+    return tMatrix;
+}
+
+Matrix<double> getBasicScaleMatrix(double scaleX, double scaleY, double scaleZ) {
+    Matrix<double> tMatrix(4, 4);
+
+    tMatrix(0, 0) = scaleX;
+    tMatrix(0, 1) = 0;
+    tMatrix(0, 2) = 0;
+    tMatrix(0, 3) = 0;
+    tMatrix(1, 0) = 0;
+    tMatrix(1, 1) = scaleY;
+    tMatrix(1, 2) = 0;
+    tMatrix(1, 3) = 0;
+    tMatrix(2, 0) = 0;
+    tMatrix(2, 1) = 0;
+    tMatrix(2, 2) = scaleZ;
+    tMatrix(2, 3) = 0;
+    tMatrix(3, 0) = 0;
+    tMatrix(3, 1) = 0;
+    tMatrix(3, 2) = 0;
+    tMatrix(3, 3) = 1;
+
+    return tMatrix;
+}
+
+Matrix<double> getBasicRotateMatrix(double angle) {
+    Matrix<double> tMatrix(4, 4);
+
+    tMatrix(0, 0) = cos(angle);
+    tMatrix(0, 1) = sin(angle);
+    tMatrix(0, 2) = 0;
+    tMatrix(0, 3) = 0;
+    tMatrix(1, 0) = -sin(angle);
+    tMatrix(1, 1) = cos(angle);
+    tMatrix(1, 2) = 0;
+    tMatrix(1, 3) = 0;
+    tMatrix(2, 0) = 0;
+    tMatrix(2, 1) = 0;
+    tMatrix(2, 2) = 1;
+    tMatrix(2, 3) = 0;
+    tMatrix(3, 0) = 0;
+    tMatrix(3, 1) = 0;
+    tMatrix(3, 2) = 0;
+    tMatrix(3, 3) = 1;
+
+    return tMatrix;
 }
 
 void outputToFile() {

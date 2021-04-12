@@ -18,6 +18,16 @@ void readVerticesFile();
 void projectVertices();
 void startProcessing();
 void getAndProcessInput();
+void getTranslateInfo();
+void translate(double translateX, double translateY, double translateZ);
+void getBasicScaleInfo();
+void basicScale(double scaleX, double scaleY, double scaleZ);
+void getBasicRotateInfo();
+void basicRotate(double angle);
+void applyTransformation(Matrix<double> &tMatrix);
+Matrix<double> getTranslationMatrix(double translateX, double translateY, double translateZ);
+Matrix<double> getBasicScaleMatrix(double scaleX, double scaleY, double scaleZ);
+Matrix<double> getBasicRotateMatrix(double angle);
 void outputToFile();
 void draw();
 

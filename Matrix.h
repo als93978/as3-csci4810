@@ -23,8 +23,6 @@ public:
     Matrix operator*(Matrix &m) const {
         Matrix<T> result(rows, m.getCols());
 
-        // if time allows, error checking (e.g., invalid sizes)
-    
         for(int i = 0; i < rows; i++) {
             for(int j = 0; j < m.getCols(); j++) {
                 T currentSum = 0;
