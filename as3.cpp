@@ -15,9 +15,14 @@ vector<Vertex> vertices; // 3D vertices/points table
 vector<Vertex> projectedVertices; // 2D (projected) vertices/points table
 vector<Line> lines; // lines/edges table
 
-// const float d = 2.5; // cm
+//const float d = 2.5; // cm
 const float d = 2.5; // cm
+//const int s = 50; // cm
 const int s = 50; // cm
+// const int viewportScaleX = 500;
+// const int viewportScaleY = 500;
+// const int viewportCenterX = 500;
+// const int viewportCenterY = 500;
 const int viewportScaleX = 500;
 const int viewportScaleY = 500;
 const int viewportCenterX = 500;
