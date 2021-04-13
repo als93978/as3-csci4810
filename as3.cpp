@@ -1,3 +1,11 @@
+/*
+  Note: this uses Matrix.h for matrix implementation and lineDrawing.h
+  for line drawing and GLFW.
+
+  This file implements perspective projection that takes vertices read from
+  a text file as input.
+ */
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -37,6 +45,9 @@ void init() {
     projectVertices();
 }
 
+/*
+  Takes the points read in from the input file and applies perspective projection
+ */
 void projectVertices() {
     for(int i = 0; i < vertices.size(); i++) {
 	Vertex currentVertex = vertices[i];
@@ -268,6 +279,9 @@ void basicRotate(double angle) {
     projectVertices();
 }
 
+/*
+  Applies the transformation matrix to all the vertices
+ */
 void applyTransformation(Matrix<double> &tMatrix) {
     for(int i = 0; i < vertices.size(); i++) {
 	Vertex currentVertex = vertices[i];
@@ -402,6 +416,9 @@ void draw() {
     }
 }
 
+/*
+  Helper function that splits a string into an array based upon a delimiter
+ */
 vector<string> split(string str, string delim) {
     vector<string> result;
 
